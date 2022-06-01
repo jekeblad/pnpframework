@@ -513,9 +513,8 @@ namespace PnP.Framework.Provisioning.ObjectHandlers
             // Ensure that Files tab is available right after Teams creation
             Task.Run(async () =>
             {
-                var graphClient = GraphUtility.CreateGraphClient(accessToken);
-
-                await InitTeamDrive(groupId, graphClient);
+                var graphClient = GraphUtility.CreateGraphClient(accessToken);                
+                await WaitForTeamDriveToBeReady(groupId, graphClient);
             }).GetAwaiter().GetResult();
 
             return (teamId);
@@ -1902,6 +1901,50 @@ namespace PnP.Framework.Provisioning.ObjectHandlers
             mailNickname = UrlUtility.RemoveUnallowedCharacters(mailNickname);
             mailNickname = UrlUtility.ReplaceAccentedCharactersWithLatin(mailNickname);
             return mailNickname;
+        }
+
+        public static async Task WaitForTeamDriveToBeReady(string GroupId, Microsoft.Graph.GraphServiceClient graphClient = null)
+        {
+            var channels = await graphClient.Teams[GroupId].Channels.Request().GetAsync();
+
+            foreach (var channel in channels)
+            {
+                if (channel.DisplayName == "General")
+                {
+
+                    // Wait for the Team to be ready
+                    bool wait = true;
+                    int iterations = 0;
+                    while (wait)
+                    {
+                        iterations++;
+
+                        try
+                        {
+                            var driveItem = await graphClient.Teams[GroupId].Channels[channel.Id].FilesFolder.Request().GetAsync();
+                            if (driveItem != null)
+                            {
+                                wait = false;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // In case of exception wait for 5 secs
+                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(5));
+                        }
+
+                        // Don't wait more than 2 minute
+                        if (iterations > 24)
+                        {
+                            //wait = false;
+                            throw new Exception($"Could not get drive item for general file folder");
+                        }
+                    }
+
+
+
+                }
+            }
         }
 
         public static async Task InitTeamDrive(string GroupId, Microsoft.Graph.GraphServiceClient graphClient = null)
