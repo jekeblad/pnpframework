@@ -119,7 +119,8 @@ namespace PnP.Framework.Provisioning.ObjectHandlers
                 try
                 {
                     var team = HttpHelper.MakeGetRequestForString($"{GraphHelper.MicrosoftGraphBaseURI}v1.0/teams/{teamId}?$select=id", accessToken);
-                    if (!string.IsNullOrEmpty(team))
+                    var teamChannelsString = HttpHelper.MakeGetRequestForString($"{GraphHelper.MicrosoftGraphBaseURI}beta/teams/{teamId}/channels", accessToken);
+                    if (!string.IsNullOrEmpty(team) && !string.IsNullOrEmpty(teamChannelsString))
                     {
                         wait = false;
                     }
