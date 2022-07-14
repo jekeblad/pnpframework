@@ -28,9 +28,9 @@
 		<IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
 		<IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
 		<!-- Set the PnPCoreSdkPath and PnPCoreSdkPathNet5 to non published PnP Core SDK binaries to load them instead of the nuget ones -->
-		<PnPCoreSdkPath Condition="'$(PnPCoreSdkPath)' == ''"></PnPCoreSdkPath>
-		<PnPCoreSdkPathNet5 Condition="'$(PnPCoreSdkPathNet5)' == ''"></PnPCoreSdkPathNet5>
-		<PnPCoreSdkPathNet6 Condition="'$(PnPCoreSdkPathNet6)' == ''"></PnPCoreSdkPathNet6>
+		<PnPCoreSdkPath Condition="'$(PnPCoreSdkPath)' == ''">..\..\..\..\pnpcore\src\sdk\PnP.Core\bin\Debug\netstandard2.0\PnP.Core.dll</PnPCoreSdkPath>
+		<PnPCoreSdkPathNet5 Condition="'$(PnPCoreSdkPathNet5)' == ''">..\..\..\..\pnpcore\src\sdk\PnP.Core\bin\Debug\net5.0\PnP.Core.dll</PnPCoreSdkPathNet5>
+		<PnPCoreSdkPathNet6 Condition="'$(PnPCoreSdkPathNet6)' == ''">..\..\..\..\pnpcore\src\sdk\PnP.Core\bin\Debug\net6.0\PnP.Core.dll</PnPCoreSdkPathNet6>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\pnp.core.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
@@ -270,15 +270,6 @@
 			<Private>true</Private>
 			<SpecificVersion>false</SpecificVersion>
 		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="PnP.Core">
-	    <HintPath>..\..\..\..\pnpcore\src\sdk\PnP.Core\bin\Debug\netstandard2.0\PnP.Core.dll</HintPath>
-	  </Reference>
-	  <Reference Include="PnP.Core.Auth">
-	    <HintPath>..\..\..\..\pnpcore\src\sdk\PnP.Core.Auth\bin\Debug\netstandard2.0\PnP.Core.Auth.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>
