@@ -388,7 +388,7 @@ namespace PnP.Framework.Sites
                         /*
                          * BEGIN : Changes to address the SiteStatus=Provisioning scenario
                          */
-                        if (Convert.ToInt32(responseJson["SiteStatus"]) == 1 && string.IsNullOrWhiteSpace(Convert.ToString(responseJson["ErrorMessage"])))
+                        if ((Convert.ToInt32(responseJson["SiteStatus"]) == 1 || Convert.ToInt32(responseJson["SiteStatus"]) == 3) && string.IsNullOrWhiteSpace(Convert.ToString(responseJson["ErrorMessage"])))
                         {
                             var spOperationsMaxRetryCount = maxRetryCount;
                             var spOperationsRetryWait = retryDelay;
@@ -671,7 +671,7 @@ namespace PnP.Framework.Sites
                                 /*
                                  * BEGIN : Changes to address the SiteStatus=Provisioning scenario
                                  */
-                                if (Convert.ToInt32(responseJson["SiteStatus"]) == 1)
+                                if ((Convert.ToInt32(responseJson["SiteStatus"]) == 1 || Convert.ToInt32(responseJson["SiteStatus"]) == 3) && string.IsNullOrWhiteSpace(Convert.ToString(responseJson["ErrorMessage"])))
                                 {
                                     var spOperationsMaxRetryCount = maxRetryCount;
                                     var spOperationsRetryWait = retryDelay;
