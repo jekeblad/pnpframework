@@ -186,11 +186,16 @@
 		<PackageReference Include="PrivateObjectExtensions" Version="1.4.0" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="5.0.0" />
-		<PackageReference Include="PnP.Core" Version="1.6.*-*" Condition="'$(PnPCoreSdkPath)' == ''" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\PnP.Framework\PnP.Framework.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="PnP.Core">
+	    <HintPath>..\..\..\..\pnpcore\src\sdk\PnP.Core\bin\Debug\netstandard2.0\PnP.Core.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>
