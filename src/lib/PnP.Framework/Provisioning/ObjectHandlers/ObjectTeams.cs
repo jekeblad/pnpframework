@@ -141,7 +141,7 @@ namespace PnP.Framework.Provisioning.ObjectHandlers
             }
         }
 
-        private static async Task WaitForSharepointAliasRegistration(Tenant tenant, string alias)
+        private static async Task WaitForSharepointProcess(Tenant tenant, string alias)
         {
             // Wait for the Team to be ready
             bool wait = true;
@@ -149,28 +149,18 @@ namespace PnP.Framework.Provisioning.ObjectHandlers
             while (wait)
             {
                 iterations++;
-
-                try
-                {
-                    var rootSiteUrl = tenant.Context.Url.Replace("-admin", "");
-                    using (ClientContext context = tenant.Context.Clone(rootSiteUrl))
-                    {
-                        var exists = await context.AliasExistsAsync(alias);
-                        wait = !exists;
-                    }
-                }
-                catch (Exception)
-                {
-                    // In case of exception wait for 5 secs
-                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(5));
-                }
-
-                // Don't wait more than 2 minute
                 if (iterations > 24)
                 {
-                    //wait = false;
-                    throw new Exception($"Sharepoint alias {alias} was not registered in Sharepoint within timeout.");
+                    throw new Exception($"Sharepoint alias {alias} was not registered or the Sharepoint site was not set up within the timeout.");
                 }
+                Dictionary<string, object> groupInfo = null;
+                var rootSiteUrl = tenant.Context.Url.Replace("-admin", "");
+                using (ClientContext context = tenant.Context.Clone(rootSiteUrl))
+                {
+                    groupInfo = await Sites.SiteCollection.GetGroupInfoByGroupIdAsync(context, alias, true);
+                    if (groupInfo == null)
+                        wait = true;
+                }                
             }
         }
 
@@ -1684,7 +1674,7 @@ namespace PnP.Framework.Provisioning.ObjectHandlers
                                         hierarchy.Sequences.Add(sequence);
                                     }
 
-                                    WaitForSharepointAliasRegistration(tenant, parser.ParseString(team.MailNickname)).Wait();
+                                    WaitForSharepointProcess(tenant, parser.ParseString(team.MailNickname)).Wait();
 
                                     new ObjectHierarchySequenceSites().ProvisionObjects(tenant, hierarchy, teamSequenceId, parser, configuration);
                                     hierarchy.Sequences.Clear();
