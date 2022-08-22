@@ -153,13 +153,14 @@ namespace PnP.Framework.Provisioning.ObjectHandlers
                 {
                     throw new Exception($"Sharepoint alias {alias} was not registered or the Sharepoint site was not set up within the timeout.");
                 }
-                Dictionary<string, object> groupInfo = null;
+                Dictionary<string, string> groupInfo = null;
                 var rootSiteUrl = tenant.Context.Url.Replace("-admin", "");
                 using (ClientContext context = tenant.Context.Clone(rootSiteUrl))
                 {
-                    groupInfo = await Sites.SiteCollection.GetGroupInfoByGroupIdAsync(context, alias, true);
-                    if (groupInfo == null)
-                        wait = true;
+                    groupInfo = await Sites.SiteCollection.GetGroupInfoAsync(context, alias);
+                    wait = groupInfo == null;
+                    if (wait)
+                        Thread.Sleep(TimeSpan.FromSeconds(iterations));
                 }                
             }
         }
